@@ -30,18 +30,50 @@ const NameForm = () => {
     }
   };
 
+  const formStyle = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+    padding: "20px",
+    borderRadius: "8px",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+    maxWidth: "400px",
+    margin: "200px auto",
+  };
+
+  const inputStyle = {
+    padding: "10px",
+    fontSize: "16px",
+    borderRadius: "4px",
+    border: "1px solid #ccc",
+    marginBottom: "10px",
+  };
+
+  const buttonStyle = {
+    backgroundColor: "#4CAF50",
+    color: "white",
+    padding: "10px 20px",
+    borderRadius: "4px",
+    border: "none",
+    cursor: "pointer",
+    fontSize: "16px",
+  };
+
   return (
-    <div>
+    <div style={formStyle}>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           value={name}
           onChange={handleInputChange}
           placeholder="Enter your name"
+          style={inputStyle}
         />
-        <button type="submit">Submit</button>
+        <button type="submit" style={buttonStyle}>
+          Submit
+        </button>
       </form>
-
       {predictedAge !== null && <p>Predicted age: {predictedAge}</p>}
     </div>
   );
