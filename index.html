@@ -2,20 +2,115 @@
 <html>
   <head>
     <title>React Test</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src='https://unpkg.com/babel-standalone@6.26.0/babel.js'></script>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.production.min.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+    ></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .form-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #f5f5f5;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+      }
+
+      .input-field {
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+      }
+
+      .submit-button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
     <script type="text/babel">
       const { useState } = React;
-      const App = () => {
-        return (<div>Implement me!</div>);
-      }
 
-      ReactDOM.render(<App />, document.querySelector('#root'));
+      const NameForm = () => {
+        const [name, setName] = useState("");
+        const [predictedAge, setPredictedAge] = useState(null);
+        const [ageCache, setAgeCache] = useState({});
+
+        const handleInputChange = (event) => {
+          setName(event.target.value);
+        };
+
+        const handleSubmit = async (event) => {
+          event.preventDefault();
+
+          if (ageCache[name]) {
+            setPredictedAge(ageCache[name]);
+          } else {
+            try {
+              const response = await axios.get(
+                `https://api.agify.io?name=${name}`
+              );
+              const predictedAge = response.data.age;
+              setPredictedAge(predictedAge);
+              setAgeCache({ ...ageCache, [name]: predictedAge });
+            } catch (error) {
+              console.error("Error fetching data:", error);
+            }
+          }
+        };
+
+        return (
+          <div className="form-container">
+            <form onSubmit={handleSubmit}>
+              <input
+                type="text"
+                value={name}
+                onChange={handleInputChange}
+                placeholder="Enter your name"
+                className="input-field"
+              />
+              <button type="submit" className="submit-button">
+                Submit
+              </button>
+            </form>
+            {predictedAge !== null && <p>Predicted age: {predictedAge}</p>}
+          </div>
+        );
+      };
+
+      const App = () => {
+        return (
+          <div className="container">
+            <NameForm />
+          </div>
+        );
+      };
+
+      ReactDOM.render(<App />, document.getElementById("root"));
     </script>
   </body>
 </html>
